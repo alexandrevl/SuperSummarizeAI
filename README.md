@@ -1,7 +1,7 @@
-# README for SiteSummarizeAI
+# SiteSummarizeAI
 
 ## Description
-SiteSummarizeAI, developed by Alexandre Lima, is a Python tool that extracts textual content from a provided webpage URL, processes the content through ChatGPT to generate a summary, and then copies the summarized content to the clipboard.
+SiteSummarizeAI is a Python tool that extracts textual content from a provided webpage URL, processes the content through ChatGPT to generate a summary, and then copies the summarized content to the clipboard.
 
 ## Installation
 
@@ -20,14 +20,12 @@ Ensure to keep your `.env` file confidential and not share it, as it contains se
 To use SiteSummarizeAI, provide the URL as a command-line argument:
 
 ```
-python your_script_name.py <webpage_url>
+python main.py <webpage_url>
 ```
-
-Replace `your_script_name.py` with the name of the script if you've renamed it and `<webpage_url>` with the URL of the webpage from which you want to extract and summarize the text.
 
 For example:
 ```
-python your_script_name.py https://example.com
+python main.py https://example.com
 ```
 
 ## Troubleshooting
@@ -41,6 +39,3 @@ If you'd like to contribute to SiteSummarizeAI, please open an issue first to di
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
-
-## Credits
-Developed by Alexandre Lima.
