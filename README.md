@@ -40,7 +40,6 @@ python main.py <URL> --lang <desired_language_code>
 - **Dependencies**: Double-check to ensure all required dependencies are correctly installed.
 - **Command Line Argument**: Always provide a URL when executing the script.
 - **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
-- **YouTube Captions**: If you're providing a YouTube URL, ensure it's publicly accessible and has captions enabled.
 
 ## Contributing
 Interested in contributing to SuperSummarizeAI? We'd love to collaborate! Please initiate by opening an issue to discuss the changes you'd like to make.
