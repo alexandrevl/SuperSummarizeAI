@@ -33,6 +33,15 @@ For multilingual summaries, specify your desired language using the `--lang` opt
 ```
 python main.py <URL> --lang <desired_language_code>
 ```
+## 📸 Examples
+
+See SuperSummarizeAI in action:
+
+### Webpage Summarization:
+![Example of webpage summarization](./examples/example_website.png)
+
+### YouTube Video Summarization:
+![Example of YouTube video summarization](./examples/example_youtube.png)
 
 ## Troubleshooting
 
