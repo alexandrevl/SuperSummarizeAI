@@ -6,6 +6,7 @@ import pyperclip
 import sys
 import subprocess
 import urllib3
+import tiktoken
 
 import openai
 from dotenv import load_dotenv
@@ -15,35 +16,85 @@ from youtube_transcript_api import YouTubeTranscriptApi
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+def encoding_getter(encoding_type: str):
+    """
+    Returns the appropriate encoding based on the given encoding type (either an encoding string or a model name).
+    """
+    if "k_base" in encoding_type:
+        return tiktoken.get_encoding(encoding_type)
+    else:
+        return tiktoken.encoding_for_model(encoding_type)
+
+def tokenizer(string: str, encoding_type: str) -> list:
+    """
+    Returns the tokens in a text string using the specified encoding.
+    """
+    encoding = encoding_getter(encoding_type)
+    tokens = encoding.encode(string)
+    return tokens
+
+def token_counter(string: str, encoding_type: str) -> int:
+    """
+    Returns the number of tokens in a text string using the specified encoding.
+    """
+    num_tokens = len(tokenizer(string, encoding_type))
+    return num_tokens
+
+def truncate_to_max_tokens(text: str, max_tokens: int = 8180, encoding_type: str = "cl100k_base") -> str:
+    """
+    Truncates the text to a specified number of tokens.
+    """
+    tokens = tokenizer(text, encoding_type)
+    if len(tokens) <= max_tokens:
+        return text
+    
+    # Convert tokens back to text
+    reconstructed_text = encoding_getter(encoding_type).decode(tokens)
+    
+    # Re-tokenize and truncate the text iteratively until it fits within the max_tokens limit
+    while len(tokenizer(reconstructed_text, encoding_type)) > max_tokens:
+        reconstructed_text = reconstructed_text[:-1]
+    
+    return reconstructed_text
+
+
+
 def chatgpt(text, source):
     try:
         openai.api_key = os.getenv("OPENAI_KEY")
+        # To get the tokeniser corresponding to a specific model in the OpenAI API:
 
         if source == "youtube":
             system_text = """
-    Os dados abaixo são a transcrição de um vídeo do YouTube. Faça um resumo desses dados em português do brasil. Devolva como um JSON no seguinte formato:
+    The data below is a transcript from a YouTube video. Please summarize this data in brazilian portuguese. Return the result as a JSON in the following format:
     {
-        titulo: "Titulo do seu resumo",
-        resumo: "Resumo do vídeo"
+        title: "Title of your summary",
+        summary: "Summary of the video"
     }
             """
         else:
             system_text = """
-    Os dados abaixo foram extraidos de um site da internet. Faça um resumo desses dados em português do brasil. Devolva como um JSON no seguinte formato:
+    The data below was extracted from a website. Please summarize this data in brazilian portuguese. Return the result as a JSON in the following format:
     {
-        titulo: "Titulo do seu resumo",
-        resumo: "Resumo do artigo"
+        title: "Title of your summary",
+        summary: "Summary of the article"
     }
             """
-
+        # print(len(tokenizer(system_text + text,"cl100k_base")))
+        # print("Adjusting text to max tokens")
+        # text = truncate_to_max_tokens(system_text + text)
+        # print(len(tokenizer(text,"cl100k_base")))
+        # print("Adjusting text to max tokens")
+        text_to_chatgpt = system_text + text
         response_openai = openai.ChatCompletion.create(
             model='gpt-4',
-            messages=[{"role": "user", "content": system_text + text}], 
+            messages=[{"role": "user", "content": text_to_chatgpt}], 
         )
         response_message = response_openai.choices[0].message.content
     except Exception as e:
         response_message = "Error: " + str(e)
     return response_message
+
 
 def main():
     if len(sys.argv) > 1:
@@ -52,7 +103,7 @@ def main():
         print("Please provide a URL as a command line argument.")
         sys.exit(1)
         
-    print("Extracting text from url:", url)
+    print("Extracting data from url:", url)
 
     # Check if the URL is a YouTube URL
     if "youtube.com" in url or "youtu.be" in url:
@@ -63,9 +114,9 @@ def main():
         source = "website"
 
     if text is None:
-        print("Failed to extract text from url:", url)
+        print("Failed to extract data from url:", url)
         sys.exit(1)
-    print ("Text extracted")
+    print ("Text extracted ("+source+")")
     print("Processing chatGPT")
     chatgpt_result = chatgpt(text, source)
     print("End of processing chatGPT")
@@ -74,18 +125,17 @@ def main():
     except Exception as e:
         print("Error: ", e)
         chatgpt_json = {
-            "titulo": "Error",
-            "resumo": chatgpt_result
+            "title": "Error",
+            "summary": chatgpt_result
         }
-    title = chatgpt_json.get('titulo', 'Title Not Found')
+    title = chatgpt_json.get('title', 'Title Not Found')
     copy_to_clipboard(format_text(url,chatgpt_json))
 
 
 def format_text(url, text):
-    title = text.get('titulo', 'Title Not Found')
-    resume = text.get('resumo', 'Summary Not Found')
-    # titulo = f"##*{titulo}*"
-    formatted_text = f"{title}\n\n{resume}\n\n{url}"
+    title = text.get('title', 'Title Not Found')
+    summary = text.get('summary', 'Summary Not Found')
+    formatted_text = f"{title}\n\n{summary}\n\n{url}"
     return formatted_text
 
 def extract_text_from_url(url):
