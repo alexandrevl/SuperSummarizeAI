@@ -1,4 +1,4 @@
-# SiteSummarizeAI
+# SuperSummarizeAI
 
 ## Description
 SiteSummarizeAI is a Python tool that extracts textual content from a provided webpage URL, processes the content through ChatGPT to generate a summary, and then copies the summarized content to the clipboard.
