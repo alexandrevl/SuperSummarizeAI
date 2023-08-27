@@ -1,41 +1,49 @@
+
 # SuperSummarizeAI
 
 ## Description
-SuperSummarizeAI is a Python tool that extracts textual content from a provided webpage URL, processes the content through ChatGPT to generate a summary, and then copies the summarized content to the clipboard.
+SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL or a YouTube video link, this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
 
 ## Installation
 
-1. Ensure you have Python 3 installed.
-2. Install the required packages:
+1. Ensure you have Python 3 installed on your system.
+2. Install the required packages using pip:
 ```
-pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api
+pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api argparse
 ```
-1. Create a `.env` file in the root directory of your project and add the following line, replacing `YOUR_OPENAI_KEY` with your actual OpenAI key (You can obtain one [here](https://beta.openai.com/).):
+3. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
 OPENAI_KEY="YOUR_OPENAI_KEY"
 ```
-Ensure to keep your `.env` file confidential and not share it, as it contains sensitive API credentials.
+For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
 ## Usage
-To use SuperSummarizeAI, provide the URL as a command-line argument:
+To employ SuperSummarizeAI, simply provide the desired URL (webpage or YouTube video) as a command-line argument:
 
 ```
-python main.py <webpage_url>
+python main.py <URL>
 ```
 
-For example:
+For instance:
 ```
 python main.py https://example.com
 ```
 
+For multilingual summaries, specify your desired language using the `--lang` option (default is 'brazilian portuguese'):
+```
+python main.py <URL> --lang <desired_language_code>
+```
+
 ## Troubleshooting
-- **URL Input**: Ensure the URL is correctly formatted and starts with `http://` or `https://`.
-- **Dependencies**: Ensure all required dependencies are correctly installed.
-- **Command Line Argument**: Always provide a URL when running the script.
-- **OpenAI Key**: Ensure your `.env` file contains the correct OpenAI key.
+
+- **URL Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`.
+- **Dependencies**: Double-check to ensure all required dependencies are correctly installed.
+- **Command Line Argument**: Always provide a URL when executing the script.
+- **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
+- **YouTube Captions**: If you're providing a YouTube URL, ensure it's publicly accessible and has captions enabled.
 
 ## Contributing
-If you'd like to contribute to SuperSummarizeAI, please open an issue first to discuss what you would like to change.
+Interested in contributing to SuperSummarizeAI? We'd love to collaborate! Please initiate by opening an issue to discuss the changes you'd like to make.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+Licensed under [MIT](https://choosealicense.com/licenses/mit/).

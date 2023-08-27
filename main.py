@@ -6,7 +6,8 @@ import pyperclip
 import sys
 import subprocess
 import urllib3
-import tiktoken
+import argparse
+from pathlib import Path
 
 import openai
 from dotenv import load_dotenv
@@ -16,93 +17,30 @@ from youtube_transcript_api import YouTubeTranscriptApi
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def encoding_getter(encoding_type: str):
-    """
-    Returns the appropriate encoding based on the given encoding type (either an encoding string or a model name).
-    """
-    if "k_base" in encoding_type:
-        return tiktoken.get_encoding(encoding_type)
-    else:
-        return tiktoken.encoding_for_model(encoding_type)
+import os
+import openai
 
-def tokenizer(string: str, encoding_type: str) -> list:
-    """
-    Returns the tokens in a text string using the specified encoding.
-    """
-    encoding = encoding_getter(encoding_type)
-    tokens = encoding.encode(string)
-    return tokens
-
-def token_counter(string: str, encoding_type: str) -> int:
-    """
-    Returns the number of tokens in a text string using the specified encoding.
-    """
-    num_tokens = len(tokenizer(string, encoding_type))
-    return num_tokens
-
-def truncate_to_max_tokens(text: str, max_tokens: int = 8180, encoding_type: str = "cl100k_base") -> str:
-    """
-    Truncates the text to a specified number of tokens.
-    """
-    tokens = tokenizer(text, encoding_type)
-    if len(tokens) <= max_tokens:
-        return text
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='Summarize a URL using ChatGPT.')
     
-    # Convert tokens back to text
-    reconstructed_text = encoding_getter(encoding_type).decode(tokens)
+    # Making the URL argument positional
+    parser.add_argument('url', type=str, help='The URL to be summarized.')
+    parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='language')
     
-    # Re-tokenize and truncate the text iteratively until it fits within the max_tokens limit
-    while len(tokenizer(reconstructed_text, encoding_type)) > max_tokens:
-        reconstructed_text = reconstructed_text[:-1]
-    
-    return reconstructed_text
+    args = parser.parse_args()
 
+    if args.url is None:
+        print("No URL specified. Use <URL to be summarized>")
+        exit(1)
 
-
-def chatgpt(text, source):
-    try:
-        openai.api_key = os.getenv("OPENAI_KEY")
-        # To get the tokeniser corresponding to a specific model in the OpenAI API:
-
-        if source == "youtube":
-            system_text = """
-    The data below is a transcript from a YouTube video. Please summarize this data in brazilian portuguese. Return the result as a JSON in the following format:
-    {
-        title: "Title of your summary",
-        summary: "Summary of the video"
-    }
-            """
-        else:
-            system_text = """
-    The data below was extracted from a website. Please summarize this data in brazilian portuguese. Return the result as a JSON in the following format:
-    {
-        title: "Title of your summary",
-        summary: "Summary of the article"
-    }
-            """
-        # print(len(tokenizer(system_text + text,"cl100k_base")))
-        # print("Adjusting text to max tokens")
-        # text = truncate_to_max_tokens(system_text + text)
-        # print(len(tokenizer(text,"cl100k_base")))
-        # print("Adjusting text to max tokens")
-        text_to_chatgpt = system_text + text
-        response_openai = openai.ChatCompletion.create(
-            model='gpt-4',
-            messages=[{"role": "user", "content": text_to_chatgpt}], 
-        )
-        response_message = response_openai.choices[0].message.content
-    except Exception as e:
-        response_message = "Error: " + str(e)
-    return response_message
-
+    return args
 
 def main():
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-    else:
-        print("Please provide a URL as a command line argument.")
-        sys.exit(1)
-        
+    args = parse_arguments()
+
+    url = args.url
+    target_language = args.language
+    
     print("Extracting data from url:", url)
 
     # Check if the URL is a YouTube URL
@@ -115,11 +53,11 @@ def main():
 
     if text is None:
         print("Failed to extract data from url:", url)
-        sys.exit(1)
-    print ("Text extracted ("+source+")")
-    print("Processing chatGPT")
-    chatgpt_result = chatgpt(text, source)
-    print("End of processing chatGPT")
+        exit(1)
+    print ("Data extracted ("+source+")")
+    print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
+    chatgpt_result = chatgpt(text, source, target_language)
+    print("ChatGPT summary done")
     try:
         chatgpt_json = json.loads(chatgpt_result)
     except Exception as e:
@@ -129,8 +67,40 @@ def main():
             "summary": chatgpt_result
         }
     title = chatgpt_json.get('title', 'Title Not Found')
-    copy_to_clipboard(format_text(url,chatgpt_json))
+    copy_to_clipboard(format_text(url, chatgpt_json))
 
+def chatgpt(text, source, target_language="brazilian portuguese"):
+    try:
+        openai.api_key = os.getenv("OPENAI_KEY")
+        
+        if source == "youtube":
+            system_text = f"""
+    The data below is a transcript from a YouTube video. Please summarize this data in {target_language}. Return the result as a JSON in the following format:
+    {{
+        title: "Title of your summary",
+        summary: "Summary of the video"
+    }}
+            """
+        else:
+            system_text = f"""
+    The data below was extracted from a website. Please summarize this data in {target_language}. Return the result as a JSON in the following format:
+    {{
+        title: "Title of your summary",
+        summary: "Summary of the article"
+    }}
+            """
+        
+        text_to_chatgpt = system_text + text
+        text_to_chatgpt = text_to_chatgpt[:20000]
+        
+        response_openai = openai.ChatCompletion.create(
+            model='gpt-4',
+            messages=[{"role": "user", "content": text_to_chatgpt}], 
+        )
+        response_message = response_openai.choices[0].message.content
+    except Exception as e:
+        response_message = "Error: " + str(e)
+    return response_message
 
 def format_text(url, text):
     title = text.get('title', 'Title Not Found')
