@@ -1,4 +1,3 @@
-
 # SuperSummarizeAI
 
 ## Description
@@ -7,11 +6,19 @@ SuperSummarizeAI is a versatile Python tool designed to extract and summarize te
 ## Installation
 
 1. Ensure you have Python 3 installed on your system.
-2. Install the required packages using pip:
+2. Clone the repository to your local machine:
+```
+git clone https://github.com/alexandrevl/SuperSummarizeAI.git
+```
+3. Navigate to the cloned directory:
+```
+cd SuperSummarizeAI
+```
+4. Install the required packages using pip:
 ```
 pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api argparse
 ```
-3. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
+5. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
 OPENAI_KEY="YOUR_OPENAI_KEY"
 ```
@@ -33,6 +40,7 @@ For multilingual summaries, specify your desired language using the `--lang` opt
 ```
 python main.py <URL> --lang <desired_language_code>
 ```
+
 ## 📸 Examples
 
 See SuperSummarizeAI in action:
