@@ -28,17 +28,17 @@ For security reasons, always ensure that your `.env` file remains confidential. 
 To employ SuperSummarizeAI, simply provide the desired URL (webpage or YouTube video) as a command-line argument:
 
 ```
-python main.py <URL>
+python ssai.py <URL>
 ```
 
 For instance:
 ```
-python main.py https://example.com
+python ssai.py https://example.com
 ```
 
 For multilingual summaries, specify your desired language using the `--lang` option (default is 'brazilian portuguese'):
 ```
-python main.py <URL> --lang <desired_language_code>
+python ssai.py <URL> --lang <desired_language_code>
 ```
 
 ## 📸 Examples

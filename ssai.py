@@ -25,7 +25,8 @@ def parse_arguments():
     
     # Making the URL argument positional
     parser.add_argument('url', type=str, help='The URL to be summarized.')
-    parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='language')
+    parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
+    parser.add_argument('--p', type=int, default=1, help='Number of paragraphs for the summary.', dest='paragraphs')
     
     args = parser.parse_args()
 
@@ -39,7 +40,8 @@ def main():
     args = parse_arguments()
 
     url = args.url
-    target_language = args.language
+    target_language = args.lang
+    target_paragraphs = args.paragraphs
     
     print("Extracting data from url:", url)
 
@@ -55,8 +57,9 @@ def main():
         print("Failed to extract data from url:", url)
         exit(1)
     print ("Data extracted ("+source+")")
+    # print(f"Creating ChatGPT summary in {target_language} in {target_paragraphs} paragraphs. This may take a while...")
     print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
-    chatgpt_result = chatgpt(text, source, target_language)
+    chatgpt_result = chatgpt(text, source, target_language, target_paragraphs)
     print("ChatGPT summary done")
     try:
         chatgpt_json = json.loads(chatgpt_result)
@@ -69,13 +72,13 @@ def main():
     title = chatgpt_json.get('title', 'Title Not Found')
     copy_to_clipboard(format_text(url, chatgpt_json))
 
-def chatgpt(text, source, target_language="brazilian portuguese"):
+def chatgpt(text, source, target_language="brazilian portuguese", target_paragraphs=1):
     try:
         openai.api_key = os.getenv("OPENAI_KEY")
         
         if source == "youtube":
             system_text = f"""
-    The data below is a transcript from a YouTube video. Please summarize this data in {target_language}. Return the result as a JSON in the following format:
+    The data below is a transcript from a YouTube video. Generate an insightful summary of this data in this language: {target_language}. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the video"
@@ -83,7 +86,7 @@ def chatgpt(text, source, target_language="brazilian portuguese"):
             """
         else:
             system_text = f"""
-    The data below was extracted from a website. Please summarize this data in {target_language}. Return the result as a JSON in the following format:
+    The data below was extracted from a website. Generate an insightful summary of this data in this language: {target_language}. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the article"
