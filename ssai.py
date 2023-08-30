@@ -8,6 +8,8 @@ import subprocess
 import urllib3
 import argparse
 from pathlib import Path
+from urllib.parse import urlparse
+import PyPDF2
 
 import openai
 from dotenv import load_dotenv
@@ -21,16 +23,16 @@ import os
 import openai
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Summarize a URL using ChatGPT.')
+    parser = argparse.ArgumentParser(description='Summarize a URL, PDF and Youtube Video using ChatGPT.')
     
-    # Making the URL argument positional
-    parser.add_argument('url', type=str, help='The URL to be summarized.')
+    # Making the TARGET argument positional
+    parser.add_argument('target', type=str, help='The URL, PDF or Youtube Video URL to be summarized.')
     parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
     parser.add_argument('--p', type=int, default=1, help='Number of paragraphs for the summary.', dest='paragraphs')
     
     args = parser.parse_args()
 
-    if args.url is None:
+    if args.target is None:
         print("No URL specified. Use <URL to be summarized>")
         exit(1)
 
@@ -39,23 +41,32 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    url = args.url
+    target = args.target
+    is_url_valid = is_url(target)
     target_language = args.lang
     target_paragraphs = args.paragraphs
-    
-    print("Extracting data from url:", url)
 
-    # Check if the URL is a YouTube URL
-    if "youtube.com" in url or "youtu.be" in url:
-        text = extract_transcript(url)
-        source = "youtube"
+    print("Extracting data from:", target)
+    if not is_url_valid:
+        text = extract_text_from_pdf(target)
+        source = "pdf"
+        if text is None:
+            print("Failed to extract data from pdf:", target)
+            exit(1)
     else:
-        text = extract_text_from_url(url)
-        source = "website"
 
-    if text is None:
-        print("Failed to extract data from url:", url)
-        exit(1)
+        # Check if the URL is a YouTube URL
+        if "youtube.com" in target or "youtu.be" in target:
+            text = extract_transcript(target)
+            source = "youtube"
+        else:
+            text = extract_text_from_url(target)
+            source = "website"
+
+        if text is None:
+            print("Failed to extract data from:", target)
+            exit(1)
+
     print ("Data extracted ("+source+")")
     # print(f"Creating ChatGPT summary in {target_language} in {target_paragraphs} paragraphs. This may take a while...")
     print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
@@ -70,7 +81,7 @@ def main():
             "summary": chatgpt_result
         }
     title = chatgpt_json.get('title', 'Title Not Found')
-    copy_to_clipboard(format_text(url, chatgpt_json))
+    copy_to_clipboard(format_text(target, chatgpt_json))
 
 def chatgpt(text, source, target_language="brazilian portuguese", target_paragraphs=1):
     try:
@@ -154,10 +165,27 @@ def copy_to_clipboard(text):
     print("-------------------")
     print(f'Copied to clipboard')
 
-def notify(title, text):
-    """Send a macOS notification."""
-    applescript = f'display notification "{text}" with title "{title}"'
-    subprocess.run(["osascript", "-e", applescript])
+def extract_text_from_pdf(file_path):
+    # Open the PDF file
+    with open(file_path, 'rb') as pdf_file:
+        # Initialize PDF reader
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        
+        # Extract text from each page
+        text = ''
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
+            
+    return text
+
+def is_url(string):
+    try:
+        result = urlparse(string)
+        # Ensure the string has a scheme (e.g., "http") and a network location (e.g., "www.google.com")
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
 
 if __name__ == "__main__":
     main()

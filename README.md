@@ -1,7 +1,7 @@
 # SuperSummarizeAI
 
 ## Description
-SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL or a YouTube video link, this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
+SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL, a YouTube video link or a PDF file this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
 
 ## Installation
 
@@ -16,7 +16,7 @@ cd SuperSummarizeAI
 ```
 4. Install the required packages using pip:
 ```
-pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api argparse
+pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api argparse PyPDF2
 ```
 5. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
@@ -53,7 +53,7 @@ See SuperSummarizeAI in action:
 
 ## Troubleshooting
 
-- **URL Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`.
+- **TARGET Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`. If you're trying to summarize a PDF file, make sure the URL points directly to the file.
 - **Dependencies**: Double-check to ensure all required dependencies are correctly installed.
 - **Command Line Argument**: Always provide a URL when executing the script.
 - **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
