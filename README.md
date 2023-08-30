@@ -25,20 +25,24 @@ OPENAI_KEY="YOUR_OPENAI_KEY"
 For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
 ## Usage
-To employ SuperSummarizeAI, simply provide the desired URL (webpage or YouTube video) as a command-line argument:
+To employ SuperSummarizeAI, simply provide the desired URL (webpage or YouTube video) or PDF file as a command-line argument:
 
 ```
-python ssai.py <URL>
+python ssai.py <TARGET>
 ```
 
 For instance:
 ```
 python ssai.py https://example.com
 ```
+or 
+```
+python ssai.py MY_PDF.pdf
+```
 
 For multilingual summaries, specify your desired language using the `--lang` option (default is 'brazilian portuguese'):
 ```
-python ssai.py <URL> --lang <desired_language_code>
+python ssai.py <TARGET> --lang <desired_language>
 ```
 
 ## 📸 Examples
@@ -53,7 +57,7 @@ See SuperSummarizeAI in action:
 
 ## Troubleshooting
 
-- **TARGET Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`. If you're trying to summarize a PDF file, make sure the URL points directly to the file.
+- **TARGET Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`. For PDF files, ensure the file is in the same directory as the script or provide the full path to the file.
 - **Dependencies**: Double-check to ensure all required dependencies are correctly installed.
 - **Command Line Argument**: Always provide a URL when executing the script.
 - **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
