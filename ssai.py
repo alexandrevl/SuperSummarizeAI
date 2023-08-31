@@ -28,12 +28,13 @@ def parse_arguments():
     # Making the TARGET argument positional
     parser.add_argument('target', type=str, help='The URL, PDF or Youtube Video URL to be summarized.')
     parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
+    parser.add_argument('--context', type=str, default=None, help='Add context to the summary', dest='context')
     parser.add_argument('--p', type=int, default=1, help='Number of paragraphs for the summary.', dest='paragraphs')
     
     args = parser.parse_args()
 
     if args.target is None:
-        print("No URL specified. Use <URL to be summarized>")
+        print("No TARGET specified. Use <TARGET to be summarized>")
         exit(1)
 
     return args
@@ -45,6 +46,7 @@ def main():
     is_url_valid = is_url(target)
     target_language = args.lang
     target_paragraphs = args.paragraphs
+    context = args.context
 
     print("Extracting data from:", target)
     if not is_url_valid:
@@ -70,7 +72,7 @@ def main():
     print ("Data extracted ("+source+")")
     # print(f"Creating ChatGPT summary in {target_language} in {target_paragraphs} paragraphs. This may take a while...")
     print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
-    chatgpt_result = chatgpt(text, source, target_language, target_paragraphs)
+    chatgpt_result = chatgpt(text, source, target_language, target_paragraphs, context)
     print("ChatGPT summary done")
     try:
         chatgpt_json = json.loads(chatgpt_result)
@@ -83,13 +85,15 @@ def main():
     title = chatgpt_json.get('title', 'Title Not Found')
     copy_to_clipboard(format_text(target, chatgpt_json))
 
-def chatgpt(text, source, target_language="brazilian portuguese", target_paragraphs=1):
+def chatgpt(text, source, target_language="brazilian portuguese", target_paragraphs=1, context=None):
     try:
+        additional_context = ""
+        if context is not None:
+            additional_context = "Additional context: " + context
         openai.api_key = os.getenv("OPENAI_KEY")
-        
         if source == "youtube":
             system_text = f"""
-    The data below is a transcript from a YouTube video. Generate an insightful summary of this data in this language: {target_language}. Return the result as a JSON in the following format:
+    The data below is a transcript from a YouTube video. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use "\\n" to break line, if needed. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the video"
@@ -97,7 +101,7 @@ def chatgpt(text, source, target_language="brazilian portuguese", target_paragra
             """
         else:
             system_text = f"""
-    The data below was extracted from a website. Generate an insightful summary of this data in this language: {target_language}. Return the result as a JSON in the following format:
+    The data below was extracted from a website. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use "\\n" to break line, if needed. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the article"

@@ -45,6 +45,22 @@ For multilingual summaries, specify your desired language using the `--lang` opt
 python ssai.py <TARGET> --lang <desired_language>
 ```
 
+For instance:
+```
+python ssai.py https://example.com --lang english
+```
+
+For give a context to the AI, use the `--context` option:
+```
+python ssai.py <TARGET> --context <context>
+```
+
+For instance:
+```
+python ssai.py https://youtube.com/watch?v=example --context "The name of presenter is John Doe"
+```
+
+
 ## 📸 Examples
 
 See SuperSummarizeAI in action:
