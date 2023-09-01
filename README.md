@@ -16,7 +16,7 @@ cd SuperSummarizeAI
 ```
 4. Install the required packages using pip:
 ```
-pip install requests beautifulsoup4 pyperclip openai python-dotenv youtube_transcript_api argparse PyPDF2
+pip install -r requirements.txt
 ```
 5. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
