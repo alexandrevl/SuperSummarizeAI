@@ -1,26 +1,23 @@
 #!python
-import requests
-from bs4 import BeautifulSoup
-import json
-import pyperclip
-import sys
-import subprocess
-import urllib3
 import argparse
+import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 from urllib.parse import urlparse
-import PyPDF2
 
 import openai
+import PyPDF2
+import pyperclip
+import requests
+import urllib3
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-import os
 from youtube_transcript_api import YouTubeTranscriptApi
 
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-import os
-import openai
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Summarize a URL, PDF and Youtube Video using ChatGPT.')
