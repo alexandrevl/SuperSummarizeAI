@@ -71,10 +71,13 @@ def main():
 
     print ("Data extracted ("+source+")")
     # print(f"Creating ChatGPT summary in {target_language} in {target_paragraphs} paragraphs. This may take a while...")
+    if context is not None:
+        print("Context:", context)
     print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
     chatgpt_result = chatgpt(text, source, target_language, target_paragraphs, context)
     print("ChatGPT summary done")
     try:
+        chatgpt_result = chatgpt_result.strip()
         chatgpt_json = json.loads(chatgpt_result)
     except Exception as e:
         print("Error: ", e)
@@ -93,7 +96,7 @@ def chatgpt(text, source, target_language="brazilian portuguese", target_paragra
         openai.api_key = os.getenv("OPENAI_KEY")
         if source == "youtube":
             system_text = f"""
-    The data below is a transcript from a YouTube video. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use "\\n" to break line, if needed. Return the result as a JSON in the following format:
+    The data below is a transcript from a YouTube video. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use \\n to break line, if needed. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the video"
@@ -101,7 +104,7 @@ def chatgpt(text, source, target_language="brazilian portuguese", target_paragra
             """
         else:
             system_text = f"""
-    The data below was extracted from a website. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use "\\n" to break line, if needed. Return the result as a JSON in the following format:
+    The data below was extracted from a {source}. Generate an insightful summary of this data in this language: {target_language}. {additional_context}. Use \\n to break line, if needed. Return the result as a JSON in the following format:
     {{
         title: "Title of your summary",
         summary: "Summary of the article"
