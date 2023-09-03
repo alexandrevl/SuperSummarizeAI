@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='ssai',
-    version='1.0.3',
-    description='A tool for summarizing content',
+    version='1.0.10',
+    description="SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL, a YouTube video link, or a PDF file, this tool processes the content through ChatGPT to generate an insightful summary.",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     author='Alexandre Lima',
     author_email='alexandrevl@gmail.com',
-    url='https://github.com/alexandrevl/SuperSummarizeAI',  # Assuming it's on GitHub
-    packages=find_packages(),
+    url='https://github.com/alexandrevl/SuperSummarizeAI',
+    packages=find_packages(include=['ssai', 'ssai.*']),
     install_requires=open('requirements.txt').readlines(),
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -22,7 +22,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'ssai=ssai:main',
+            'ssai=ssai:run',
         ],
     },
 )
