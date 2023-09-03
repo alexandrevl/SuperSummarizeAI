@@ -1,9 +1,27 @@
 # SuperSummarizeAI
 
 ## Description
-SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL, a YouTube video link or a PDF file this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
+SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL, a YouTube video link, or a PDF file, this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
 
 ## Installation
+
+### Using Homebrew (macOS)
+
+1. Tap into the SuperSummarizeAI repository:
+```
+brew tap alexandrevl/supersummarizeai
+```
+2. Install SuperSummarizeAI:
+```
+brew install ssai
+```
+3. Set your OpenAI key using the following command, replacing `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
+```
+ssai --OPENAI_KEY=YOUR_OPENAI_KEY
+```
+For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
+
+### Manual Installation
 
 1. Ensure you have Python 3 installed on your system.
 2. Clone the repository to your local machine:
@@ -18,14 +36,60 @@ cd SuperSummarizeAI
 ```
 pip install -r requirements.txt
 ```
-5. Set your OpenAI key using the following command, replacing YOUR_OPENAI_KEY with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
+5. Set your OpenAI key using the following command, replacing `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
 python ssai.py --OPENAI_KEY=YOUR_OPENAI_KEY
 ```
 For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
+Absolutely! If users installed SuperSummarizeAI via Homebrew, they would use the `ssai` command instead of `python ssai.py`. Let's adjust the **Usage** section to account for both installation methods:
+
 ## Usage
-To employ SuperSummarizeAI, simply provide the desired URL (webpage or YouTube video) or PDF file as a command-line argument:
+
+### If Installed via Homebrew:
+Simply provide the desired URL (webpage or YouTube video) or PDF file as a command-line argument:
+
+```
+ssai <TARGET>
+```
+
+For instance:
+
+```
+ssai https://example.com
+```
+or 
+```
+ssai MY_PDF.pdf
+```
+
+For multilingual summaries, specify your desired language using the `--lang` option (default is 'brazilian portuguese'):
+```
+ssai <TARGET> --lang <desired_language>
+```
+
+For instance:
+```
+ssai https://example.com --lang english
+```
+
+For adding context to the AI, use the `--context` option:
+```
+ssai <TARGET> --context <context>
+```
+
+For instance:
+```
+ssai https://youtube.com/watch?v=example --context "The name of the presenter is John Doe"
+```
+
+For more information on the available options, run:
+```
+ssai --help
+```
+
+### If Installed Manually:
+To employ SuperSummarizeAI, provide the desired URL (webpage or YouTube video) or PDF file as a command-line argument:
 
 ```
 python ssai.py <TARGET>
