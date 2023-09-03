@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-ssai.egg-info/PKG-INFO
-ssai.egg-info/SOURCES.txt
-ssai.egg-info/dependency_links.txt
-ssai.egg-info/requires.txt
-ssai.egg-info/top_level.txt

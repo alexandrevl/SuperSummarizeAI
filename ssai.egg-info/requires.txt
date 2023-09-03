@@ -1,8 +1,0 @@
-requests
-beautifulsoup4
-pyperclip
-urllib3
-PyPDF2
-openai
-python-dotenv
-youtube_transcript_api
