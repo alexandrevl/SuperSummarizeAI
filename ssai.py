@@ -13,34 +13,43 @@ import pyperclip
 import requests
 import urllib3
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 from youtube_transcript_api import YouTubeTranscriptApi
 
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Summarize a URL, PDF and Youtube Video using ChatGPT.')
+    parser = argparse.ArgumentParser(description='Summarize a URL, PDF, or Youtube Video using ChatGPT.')
     
-    # Making the TARGET argument positional
-    parser.add_argument('target', type=str, help='The URL, PDF or Youtube Video URL to be summarized.')
+    # Making the TARGET argument optional by adding nargs='?'
+    parser.add_argument('target', type=str, nargs='?', default=None, help='The URL, PDF, or Youtube Video URL to be summarized.')
     parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
     parser.add_argument('--context', type=str, default=None, help='Add context to the summary', dest='context')
-    parser.add_argument('--OPENAI_KEY', type=str, help='Set the OpenAI API key and store it')
+    api_key_help = ('Set the OpenAI API key and store it.\n'
+                    'To obtain an OpenAI API key, sign up at: https://beta.openai.com/signup/')
 
+
+    parser.add_argument('--OPENAI_KEY', type=str, help=api_key_help)
     
     args = parser.parse_args()
 
     # Check if OPENAI_KEY argument is provided
     if args.OPENAI_KEY:
-        # Write the provided key to the .env file in the root folder
-        with open('.env', 'w') as env_file:
-            env_file.write(f'OPENAI_KEY="{args.OPENAI_KEY}"')
+        # Use dotenv's set_key function to write the OPENAI_KEY to the .env file
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        env_path = os.path.join(script_directory, '.env')
+        set_key(env_path, 'OPENAI_KEY', args.OPENAI_KEY)
         print("OPENAI_KEY has been set and stored.")
+        exit(0)
     
     if os.getenv("OPENAI_KEY") is None:
-        print("OPENAI_KEY is not set. Use --OPENAI_KEY to set it.")
+        print("OPENAI_KEY is not set. To use SuperSummarizeAI, you need a valid OpenAI API key.")
+        print("1. Visit https://beta.openai.com/signup/ to sign up for an OpenAI account.")
+        print("2. Once registered, navigate to the API section to obtain your key.")
+        print("3. Set your key using: ssai --OPENAI_KEY=YOUR_OPENAI_KEY")
         exit(1)
+
 
     if args.target is None:
         print("No TARGET specified. Use <TARGET to be summarized>")
