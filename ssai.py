@@ -26,9 +26,21 @@ def parse_arguments():
     parser.add_argument('target', type=str, help='The URL, PDF or Youtube Video URL to be summarized.')
     parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
     parser.add_argument('--context', type=str, default=None, help='Add context to the summary', dest='context')
-    parser.add_argument('--p', type=int, default=1, help='Number of paragraphs for the summary.', dest='paragraphs')
+    parser.add_argument('--OPENAI_KEY', type=str, help='Set the OpenAI API key and store it')
+
     
     args = parser.parse_args()
+
+    # Check if OPENAI_KEY argument is provided
+    if args.OPENAI_KEY:
+        # Write the provided key to the .env file in the root folder
+        with open('.env', 'w') as env_file:
+            env_file.write(f'OPENAI_KEY="{args.OPENAI_KEY}"')
+        print("OPENAI_KEY has been set and stored.")
+    
+    if os.getenv("OPENAI_KEY") is None:
+        print("OPENAI_KEY is not set. Use --OPENAI_KEY to set it.")
+        exit(1)
 
     if args.target is None:
         print("No TARGET specified. Use <TARGET to be summarized>")
@@ -42,7 +54,6 @@ def main():
     target = args.target
     is_url_valid = is_url(target)
     target_language = args.lang
-    target_paragraphs = args.paragraphs
     context = args.context
 
     print("Extracting data from:", target)
@@ -67,11 +78,10 @@ def main():
             exit(1)
 
     print ("Data extracted ("+source+")")
-    # print(f"Creating ChatGPT summary in {target_language} in {target_paragraphs} paragraphs. This may take a while...")
     if context is not None:
         print("Context:", context)
     print(f"Creating ChatGPT summary in {target_language}. This may take a while...")
-    chatgpt_result = chatgpt(text, source, target_language, target_paragraphs, context)
+    chatgpt_result = chatgpt(text, source, target_language, context)
     print("ChatGPT summary done")
     try:
         chatgpt_result = chatgpt_result.strip()
@@ -85,7 +95,7 @@ def main():
     title = chatgpt_json.get('title', 'Title Not Found')
     copy_to_clipboard(format_text(target, chatgpt_json))
 
-def chatgpt(text, source, target_language="brazilian portuguese", target_paragraphs=1, context=None):
+def chatgpt(text, source, target_language="brazilian portuguese", context=None):
     try:
         additional_context = ""
         if context is not None:

@@ -18,9 +18,9 @@ cd SuperSummarizeAI
 ```
 pip install -r requirements.txt
 ```
-5. Create a `.env` file in the root directory of your project. Inside this file, add the following line. Remember to replace `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
+5. Set your OpenAI key using the following command, replacing YOUR_OPENAI_KEY with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
 ```
-OPENAI_KEY="YOUR_OPENAI_KEY"
+python ssai.py --OPENAI_KEY=YOUR_OPENAI_KEY
 ```
 For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
@@ -60,6 +60,11 @@ For instance:
 python ssai.py https://youtube.com/watch?v=example --context "The name of presenter is John Doe"
 ```
 
+For more information on the available options, run:
+```
+python ssai.py --help
+```
+
 
 ## 📸 Examples
 
@@ -74,8 +79,7 @@ See SuperSummarizeAI in action:
 ## Troubleshooting
 
 - **TARGET Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`. For PDF files, ensure the file is in the same directory as the script or provide the full path to the file.
-- **Dependencies**: Double-check to ensure all required dependencies are correctly installed.
-- **Command Line Argument**: Always provide a URL when executing the script.
+- **Dependencies**: Double-check to ensure all required dependencies are correctly installed. If you encounter any errors, try reinstalling the dependencies using `pip install -r requirements.txt`.
 - **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
 
 ## Contributing
