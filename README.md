@@ -42,8 +42,6 @@ python ssai.py --OPENAI_KEY=YOUR_OPENAI_KEY
 ```
 For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
-Absolutely! If users installed SuperSummarizeAI via Homebrew, they would use the `ssai` command instead of `python ssai.py`. Let's adjust the **Usage** section to account for both installation methods:
-
 ## Usage
 
 ### If Installed via Homebrew:
