@@ -1,21 +1,26 @@
+Metadata-Version: 2.1
+Name: ssai
+Version: 1.0.2
+Summary: A tool for summarizing content
+Home-page: https://github.com/alexandrevl/SuperSummarizeAI
+Author: Alexandre Lima
+Author-email: alexandrevl@gmail.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # SuperSummarizeAI
 
 ## Description
 SuperSummarizeAI is a versatile Python tool designed to extract and summarize textual content. Whether it's from a provided webpage URL, a YouTube video link, or a PDF file, this tool processes the content through ChatGPT to generate an insightful summary. Once the summary is ready, the tool copies the content directly to your clipboard for quick access and sharing. Additionally, with its multilingual capabilities, SuperSummarizeAI can cater to a global audience, generating summaries in various languages.
 
 ## Installation
-
-### Using pip (Recommended for all platforms)
-
-1. Install SuperSummarizeAI using pip:
-```
-pip install ssai
-```
-
-2. Set your OpenAI key using the following command, replacing `YOUR_OPENAI_KEY` with your actual OpenAI key (You can get one [here](https://beta.openai.com/)):
-```
-ssai --OPENAI_KEY=YOUR_OPENAI_KEY
-```
 
 ### Using Homebrew (macOS)
 
@@ -31,6 +36,7 @@ brew install ssai
 ```
 ssai --OPENAI_KEY=YOUR_OPENAI_KEY
 ```
+For security reasons, always ensure that your `.env` file remains confidential. Do not share or expose it as it contains sensitive API credentials.
 
 ### Manual Installation
 
@@ -55,7 +61,7 @@ For security reasons, always ensure that your `.env` file remains confidential. 
 
 ## Usage
 
-### If Installed via pip or Homebrew:
+### If Installed via Homebrew:
 Simply provide the desired URL (webpage or YouTube video) or PDF file as a command-line argument:
 
 ```
