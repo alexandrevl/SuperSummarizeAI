@@ -153,7 +153,6 @@ See SuperSummarizeAI in action:
 
 - **TARGET Input**: Make sure the URL you input is correctly formatted and always begins with `http://` or `https://`. For PDF files, ensure the file is in the same directory as the script or provide the full path to the file.
 - **Dependencies**: Double-check to ensure all required dependencies are correctly installed. If you encounter any errors, try reinstalling the dependencies using `pip install -r requirements.txt`.
-- **OpenAI Key**: Make sure your `.env` file contains the correct and valid OpenAI key.
 
 ## Contributing
 Interested in contributing to SuperSummarizeAI? We'd love to collaborate! Please initiate by opening an issue to discuss the changes you'd like to make.

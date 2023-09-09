@@ -27,7 +27,7 @@ def parse_arguments():
     parser.add_argument('--lang', type=str, default='brazilian portuguese', help='Target language for the summary.', dest='lang')
     parser.add_argument('--context', type=str, default=None, help='Add context to the summary', dest='context')
     api_key_help = ('Set the OpenAI API key and store it.\n'
-                    'To obtain an OpenAI API key, sign up at: https://beta.openai.com/signup/')
+                    'To obtain an OpenAI API key: https://beta.openai.com/signup/')
 
 
     parser.add_argument('--OPENAI_KEY', type=str, help=api_key_help)
@@ -176,7 +176,7 @@ def extract_transcript(video_url):
 
         fetched_transcript = transcript.fetch()
         for entry in fetched_transcript:
-            text += f"{round(entry['start'],2)} - {round((entry['start'] + entry['duration']),2)}: {entry['text']}\n"
+            text += f"{round(entry['start'],2)}: {entry['text']}\n"
     except Exception as e:
         print(f"An error occurred: {e}")
     return text
